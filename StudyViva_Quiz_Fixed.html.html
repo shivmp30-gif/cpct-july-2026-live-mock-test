@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyViva – CPCT Quiz (50 MCQ)</title>
+<style>
+:root {
+  --bg: #0b1020;
+  --bg2: #121826;
+  --bg3: #1e293b;
+  --card: rgba(255,255,255,0.07);
+  --card-hover: rgba(255,255,255,0.11);
+  --accent: #00d4ff;
+  --correct: #00ff88;
+  --wrong: #ff4d6d;
+  --text: #ffffff;
+  --text2: #b0bec5;
+  --border: rgba(255,255,255,0.12);
+  --shadow: 0 4px 24px rgba(0,0,0,0.4);
+  --radius: 14px;
+}
+.light {
+  --bg: #f0f4f8;
+  --bg2: #e2e8f0;
+  --bg3: #cbd5e1;
+  --card: rgba(255,255,255,0.9);
+  --card-hover: rgba(255,255,255,1);
+  --text: #1a202c;
+  --text2: #4a5568;
+  --border: rgba(0,0,0,0.1);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;min-height:100vh;transition:background .3s,color .3s;}
+/* STICKY HEADER */
+.header{position:sticky;top:0;z-index:100;background:rgba(11,16,32,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:10px 16px;}
+.light .header{background:rgba(240,244,248,0.96);}
+.header-top{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;}
+.logo{font-size:1.3rem;font-weight:800;color:var(--accent);letter-spacing:1px;}
+.logo span{color:var(--text);font-weight:400;font-size:.9rem;margin-left:6px;}
+.header-btns{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
+.btn{padding:6px 13px;border-radius:8px;border:1.5px solid var(--border);background:var(--card);color:var(--text);font-size:.78rem;font-weight:600;cursor:pointer;transition:.2s;white-space:nowrap;}
+.btn:hover{background:var(--accent);color:#000;border-color:var(--accent);}
+.btn.active-lang{background:var(--accent);color:#000;border-color:var(--accent);}
+.btn-reset{background:rgba(255,77,109,0.15);border-color:var(--wrong);color:var(--wrong);}
+.btn-reset:hover{background:var(--wrong);color:#fff;}
+/* STATS BAR */
+.stats-bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:4px 10px;font-size:.75rem;text-align:center;}
+.stat b{display:block;font-size:1rem;color:var(--accent);}
+.stat.correct b{color:var(--correct);}
+.stat.wrong b{color:var(--wrong);}
+/* SEARCH */
+.search-wrap{margin-top:8px;}
+.search-wrap input{width:100%;padding:8px 14px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg3);color:var(--text);font-size:.9rem;outline:none;transition:.2s;}
+.search-wrap input:focus{border-color:var(--accent);}
+/* MAIN */
+.main{max-width:860px;margin:0 auto;padding:24px 14px 120px;}
+.section-heading{background:linear-gradient(90deg,var(--accent),#7c3aed);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:1.1rem;font-weight:800;margin:24px 0 12px;letter-spacing:.5px;}
+/* QUESTION CARD */
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px 20px;margin-bottom:14px;transition:.25s;box-shadow:var(--shadow);}
+.q-card:hover{background:var(--card-hover);}
+.q-num{font-size:.72rem;color:var(--accent);font-weight:700;text-transform:uppercase;margin-bottom:4px;}
+.q-text{font-size:.97rem;font-weight:600;line-height:1.55;margin-bottom:14px;}
+.options{display:grid;gap:7px;}
+.opt{display:flex;align-items:flex-start;gap:10px;padding:10px 14px;border-radius:9px;border:1.5px solid var(--border);cursor:pointer;transition:.2s;font-size:.88rem;line-height:1.45;}
+.opt:hover:not(.disabled){background:rgba(0,212,255,0.08);border-color:var(--accent);}
+.opt.correct{background:rgba(0,255,136,0.12)!important;border-color:var(--correct)!important;color:var(--correct);}
+.opt.wrong{background:rgba(255,77,109,0.12)!important;border-color:var(--wrong)!important;color:var(--wrong);}
+.opt.disabled{cursor:default;}
+.opt-key{font-weight:700;min-width:20px;}
+.ans-area{margin-top:10px;font-size:.85rem;color:var(--text2);border-top:1px solid var(--border);padding-top:8px;}
+.ans-reveal{color:var(--correct);font-weight:700;}
+/* ANSWER KEY */
+.ans-key{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;margin:30px 0;}
+.ans-key h3{color:var(--accent);margin-bottom:12px;font-size:1rem;}
+.ans-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(70px,1fr));gap:6px;}
+.ans-item{background:var(--bg3);border-radius:6px;padding:5px 8px;font-size:.78rem;text-align:center;}
+.ans-item b{color:var(--accent);}
+/* SHOW ALL BTN AT BOTTOM */
+.bottom-bar{text-align:center;margin:28px 0 10px;}
+.btn-show-all{padding:10px 28px;border-radius:10px;border:2px solid var(--accent);background:rgba(0,212,255,0.1);color:var(--accent);font-size:.95rem;font-weight:700;cursor:pointer;transition:.2s;}
+.btn-show-all:hover{background:var(--accent);color:#000;}
+/* SUBMIT & RESULT */
+.submit-wrap{text-align:center;margin:30px 0 10px;}
+.btn-submit{padding:13px 40px;border-radius:12px;border:none;background:linear-gradient(135deg,#00d4ff,#7c3aed);color:#fff;font-size:1rem;font-weight:800;cursor:pointer;letter-spacing:.5px;box-shadow:0 4px 20px rgba(0,212,255,0.3);transition:.2s;}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(0,212,255,0.45);}
+/* RESULT CARD */
+.result-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.82);z-index:200;align-items:center;justify-content:center;padding:16px;}
+.result-overlay.show{display:flex;}
+.result-card{background:linear-gradient(145deg,#121826,#1e293b);border:1.5px solid var(--accent);border-radius:20px;padding:36px 32px;max-width:480px;width:100%;text-align:center;position:relative;box-shadow:0 0 60px rgba(0,212,255,0.2);}
+.result-close{position:absolute;top:12px;right:16px;font-size:1.4rem;cursor:pointer;color:var(--text2);}
+.result-title{font-size:1.6rem;font-weight:800;color:var(--accent);margin-bottom:6px;}
+.result-emoji{font-size:3rem;margin-bottom:8px;}
+.result-score{font-size:3.2rem;font-weight:900;background:linear-gradient(90deg,#00ff88,#00d4ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.result-pct{font-size:1.1rem;color:var(--text2);margin-bottom:18px;}
+.result-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
+.rs{background:rgba(255,255,255,0.07);border-radius:10px;padding:10px 6px;}
+.rs-val{font-size:1.5rem;font-weight:800;}
+.rs-val.c{color:var(--correct);}
+.rs-val.w{color:var(--wrong);}
+.rs-val.s{color:#ffd700;}
+.rs-lbl{font-size:.72rem;color:var(--text2);}
+.result-grade{font-size:1.1rem;font-weight:700;padding:10px;border-radius:10px;margin-top:4px;}
+.grade-a{background:rgba(0,255,136,0.15);color:var(--correct);}
+.grade-b{background:rgba(0,212,255,0.15);color:var(--accent);}
+.grade-c{background:rgba(255,215,0,0.15);color:#ffd700;}
+.grade-d{background:rgba(255,77,109,0.15);color:var(--wrong);}
+/* TOAST */
+.toast{position:fixed;bottom:70px;left:50%;transform:translateX(-50%) translateY(20px);background:#1e293b;border:1px solid var(--accent);color:var(--accent);padding:10px 22px;border-radius:10px;font-size:.88rem;font-weight:600;opacity:0;transition:.3s;z-index:300;pointer-events:none;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+/* BACK TO TOP */
+.back-top{position:fixed;bottom:18px;right:18px;background:var(--accent);color:#000;border:none;border-radius:50%;width:44px;height:44px;font-size:1.2rem;cursor:pointer;display:none;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(0,212,255,0.4);z-index:150;}
+.back-top.show{display:flex;}
+/* WARNING CARD */
+.warn-card{border-color:orange;background:rgba(255,165,0,0.06);}
+.warn-card .q-num{color:orange;}
+/* RESPONSIVE */
+@media(max-width:600px){
+  .header-top{flex-direction:column;align-items:flex-start;}
+  .result-card{padding:24px 16px;}
+  .result-score{font-size:2.4rem;}
+  .header{padding:8px 10px;max-height:46vh;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+  .logo{font-size:1.05rem;}
+  .logo span{font-size:.75rem;}
+  .btn{padding:5px 10px;font-size:.72rem;}
+  .stats-bar{gap:6px;margin-top:6px;}
+  .stat{padding:3px 7px;font-size:.68rem;}
+  .stat b{font-size:.85rem;}
+  .search-wrap{margin-top:6px;}
+  .search-wrap input{padding:7px 12px;font-size:.85rem;}
+  .main{padding:14px 10px 120px;}
+}
+html, body{overflow-x:hidden;}
+body{-webkit-overflow-scrolling:touch;}
+/* PRINT HIDDEN (print removed per task) */
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="logo">📚 StudyViva <span>CPCT Quiz</span></div>
+    <div class="header-btns">
+      <button class="btn btn-reset" onclick="resetAll()">🔄 Reset All</button>
+      <button class="btn" id="langBtn" onclick="toggleLang()">🔤 English View</button>
+      <button class="btn" onclick="window.open('https://www.youtube.com/@StudyViva','_blank')">▶️ studyviva</button>
+      <button class="btn" id="themeBtn" onclick="toggleTheme()">🌙 Dark / Light</button>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="stat"><b id="s-total">50</b>Total</div>
+    <div class="stat"><b id="s-attempted">0</b>Attempted</div>
+    <div class="stat"><b id="s-remaining">50</b>Remaining</div>
+    <div class="stat correct"><b id="s-correct">0</b>Correct</div>
+    <div class="stat wrong"><b id="s-wrong">0</b>Wrong</div>
+    <div class="stat"><b id="s-score">0</b>Score</div>
+    <div class="stat"><b id="s-pct">0%</b>Percent</div>
+  </div>
+  <div class="search-wrap">
+    <input type="text" id="searchBox" placeholder="🔍 Question, Option, Number से खोजें..." oninput="searchQuiz(this.value)">
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="main" id="mainContent"></div>
+
+<!-- SHOW ALL ANSWERS (bottom) -->
+<div class="bottom-bar">
+  <button class="btn-show-all" id="showAllBtn" onclick="toggleShowAll()">👁 सभी उत्तर दिखाएं</button>
+</div>
+
+
+
+<!-- SUBMIT BUTTON -->
+<div class="submit-wrap">
+  <button class="btn-submit" onclick="showResult()">✅ Result देखें (Submit)</button>
+</div>
+
+<!-- RESULT OVERLAY -->
+<div class="result-overlay" id="resultOverlay">
+  <div class="result-card">
+    <span class="result-close" onclick="closeResult()">✕</span>
+    <div class="result-emoji" id="rEmoji">🏆</div>
+    <div class="result-title">StudyViva Result Card</div>
+    <div class="result-score" id="rScore">0/50</div>
+    <div class="result-pct" id="rPct">Score: 0%</div>
+    <div class="result-stats">
+      <div class="rs"><div class="rs-val c" id="rCorrect">0</div><div class="rs-lbl">✅ सही</div></div>
+      <div class="rs"><div class="rs-val w" id="rWrong">0</div><div class="rs-lbl">❌ गलत</div></div>
+      <div class="rs"><div class="rs-val s" id="rSkipped">0</div><div class="rs-lbl">⏭ छोड़े</div></div>
+    </div>
+    <div class="result-grade" id="rGrade"></div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- BACK TO TOP -->
+<button class="back-top" id="backTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+// ========== DATA ==========
+const quizData = [
+  {n:1, q:"Cache Memory किस type की RAM से बनी होती है?", opts:["DRAM (Dynamic RAM)","SRAM (Static RAM)","SDRAM (Synchronous DRAM)","DDR RAM (Double Data Rate RAM)"], ans:1,
+   eq:"Cache Memory is made of which type of RAM?", eopts:["DRAM (Dynamic RAM)","SRAM (Static RAM)","SDRAM (Synchronous DRAM)","DDR RAM (Double Data Rate RAM)"]},
+  {n:2, q:"निम्न में से Flash Memory किसका उदाहरण है?", opts:["PROM (OTP Chip, BIOS Chip)","EPROM (UV EPROM, Development Chip)","EEPROM (Pen Drive, SSD)","SRAM (Cache Memory, CPU Cache)"], ans:2,
+   eq:"Flash Memory is an example of which of the following?", eopts:["PROM (OTP Chip, BIOS Chip)","EPROM (UV EPROM, Development Chip)","EEPROM (Pen Drive, SSD)","SRAM (Cache Memory, CPU Cache)"]},
+  {n:3, q:"Creeper Virus को हटाने (Delete) के लिए कौन-सा Program बनाया गया था?", opts:["Norton Antivirus","Reaper (Anti-Virus, Creeper Remover)","McAfee Antivirus","Windows Defender"], ans:1,
+   eq:"Which program was created to remove (delete) the Creeper Virus?", eopts:["Norton Antivirus","Reaper (Anti-Virus, Creeper Remover)","McAfee Antivirus","Windows Defender"]},
+  {n:4, q:"MS Excel 2019 में किस Chart को 'Spider Chart' या 'Star Chart' के नाम से भी जाना जाता है?", opts:["Radar Chart (रेडार चार्ट)","Pie Chart (पाई चार्ट)","Doughnut Chart (डोनट चार्ट)","Surface Chart (सरफेस चार्ट)"], ans:0,
+   eq:"Which chart in MS Excel 2019 is also known as 'Spider Chart' or 'Star Chart'?", eopts:["Radar Chart","Pie Chart","Doughnut Chart","Surface Chart"]},
+  {n:5, q:"निम्न में से कौन-सा वैध RAW Image Extension नहीं है?", opts:[".CR2 (कैनन)",".NEF (निकॉन)",".DNG (डिजिटल नेगेटिव)",".SVG (वेक्टर)"], ans:3,
+   eq:"Which of the following is NOT a valid RAW Image Extension?", eopts:[".CR2 (Canon)",".NEF (Nikon)",".DNG (Digital Negative)",".SVG (Vector)"]},
+  {n:6, q:"Mouse Settings खोलने के लिए किस विकल्प का उपयोग किया जाता है?", opts:["Control Panel → Hardware and Sound → Mouse","main.cpl (रन कमांड)","Display Settings (डिस्प्ले सेटिंग्स)","A और B दोनों"], ans:3,
+   eq:"Which option is used to open Mouse Settings?", eopts:["Control Panel → Hardware and Sound → Mouse","main.cpl (Run Command)","Display Settings","Both A and B"]},
+  {n:7, q:"Windows 10/11 में Clipboard History खोलने के लिए किस Shortcut Key का उपयोग होता है?", opts:["Ctrl + C (कॉपी)","Ctrl + V (पेस्ट)","Win + V (क्लिपबोर्ड हिस्ट्री)","Win + C (कोपायलट)"], ans:2,
+   eq:"Which shortcut key is used to open Clipboard History in Windows 10/11?", eopts:["Ctrl + C (Copy)","Ctrl + V (Paste)","Win + V (Clipboard History)","Win + C (Copilot)"]},
+  {n:8, q:"Linux का Default Shell कौन-सा है?", opts:["Bash (बैश)","PowerShell (पावरशेल)","Command Prompt (कमांड प्रॉम्प्ट)","Zsh (ज़ेड शेल)"], ans:0,
+   eq:"What is the Default Shell of Linux?", eopts:["Bash","PowerShell","Command Prompt","Zsh"]},
+  {n:9, q:"Drawing को Digital में Convert करने के लिए किस Device का उपयोग किया जाता है?", opts:["Scanner / Image Scanner","Plotter / Large Format Printer","Digitizer / Graphics Tablet (Wacom)","Printer / Laser Printer"], ans:2,
+   eq:"Which device is used to convert a drawing into digital format?", eopts:["Scanner / Image Scanner","Plotter / Large Format Printer","Digitizer / Graphics Tablet (Wacom)","Printer / Laser Printer"]},
+  {n:10, q:"Headset (Mic + Speaker) किस प्रकार का Device है?", opts:["Input Device (इनपुट डिवाइस)","Output Device (आउटपुट डिवाइस)","Input + Output Device (I/O डिवाइस)","Storage Device (स्टोरेज डिवाइस)"], ans:2,
+   eq:"A Headset (Mic + Speaker) is what type of device?", eopts:["Input Device","Output Device","Input + Output Device (I/O Device)","Storage Device"]},
+  {n:11, q:"MS Excel 2019 में FLOOR.MATH() Function का उपयोग किस लिए किया जाता है?", opts:["Number को नीचे (Down) Round करना","Number को ऊपर (Up) Round करना","दो Numbers का Average निकालना","Square Root निकालना"], ans:0,
+   eq:"What is the use of FLOOR.MATH() function in MS Excel 2019?", eopts:["Round a number Down","Round a number Up","Find Average of two numbers","Find Square Root"]},
+  {n:12, q:"Joystick का प्रमुख उपयोग किस कार्य में किया जाता है?", opts:["Gaming (गेमिंग)","Aircraft Simulation (विमान सिमुलेशन)","Data Entry (डेटा एंट्री)","A और B दोनों"], ans:3,
+   eq:"What is the primary use of a Joystick?", eopts:["Gaming","Aircraft Simulation","Data Entry","Both A and B"]},
+  {n:13, q:"MS Word 2019 में Text का Case बदलने की Shortcut Key क्या है?", opts:["Shift + F3","Ctrl + Shift + A","Ctrl + U","Alt + Shift + C"], ans:0,
+   eq:"What is the shortcut key to change text case (lowercase, UPPERCASE, Title Case) in MS Word 2019?", eopts:["Shift + F3","Ctrl + Shift + A","Ctrl + U","Alt + Shift + C"]},
+  {n:14, q:"OLED का पूर्ण रूप क्या है?", opts:["Optical Light Emitting Display","Organic Light Emitting Diode","Organic Liquid Emitting Display","Optical LED Display"], ans:1,
+   eq:"What is the full form of OLED?", eopts:["Optical Light Emitting Display","Organic Light Emitting Diode","Organic Liquid Emitting Display","Optical LED Display"]},
+  {n:15, q:"Tree Topology किसका सम्मिलित (Combination) रूप है?", opts:["Bus और Star Topology","Ring और Bus Topology","Star और Mesh Topology","Bus और Ring Topology"], ans:0,
+   eq:"Tree Topology is a combination of which topologies?", eopts:["Bus and Star Topology","Ring and Bus Topology","Star and Mesh Topology","Bus and Ring Topology"]},
+  {n:16, q:"IP Address की Class D का उपयोग किस लिए किया जाता है?", opts:["Private Network (प्राइवेट नेटवर्क)","Unicasting (यूनिकास्टिंग)","Broadcasting (ब्रॉडकास्टिंग)","Multicasting (मल्टीकास्टिंग)"], ans:3,
+   eq:"What is Class D IP Address used for?", eopts:["Private Network","Unicasting","Broadcasting","Multicasting"]},
+  {n:17, q:"15 अंकों के IMEI का पूर्ण रूप क्या है?", opts:["International Mobile Subscriber Identity","Integrated Mobile Equipment Interface","International Mobile Equipment Identity","International Machine Equipment Index"], ans:2,
+   eq:"What is the full form of the 15-digit IMEI?", eopts:["International Mobile Subscriber Identity","Integrated Mobile Equipment Interface","International Mobile Equipment Identity","International Machine Equipment Index"]},
+  {n:18, q:"CREATE, ALTER, DROP तथा TRUNCATE किस श्रेणी के SQL कमांड हैं?", opts:["DML (Data Manipulation Language)","DDL (Data Definition Language)","DCL (Data Control Language)","TCL (Transaction Control Language)"], ans:1,
+   eq:"CREATE, ALTER, DROP and TRUNCATE belong to which category of SQL commands?", eopts:["DML (Data Manipulation Language)","DDL (Data Definition Language)","DCL (Data Control Language)","TCL (Transaction Control Language)"]},
+  {n:19, q:"Transport Layer का Data Unit क्या कहलाता है?", opts:["Segment (सेगमेंट)","Packet (पैकेट)","Frame (फ्रेम)","Bit (बिट)"], ans:0,
+   eq:"What is the Data Unit of Transport Layer called?", eopts:["Segment","Packet","Frame","Bit"]},
+  {n:20, q:"PNG (Portable Network Graphics) में किस Compression Technique का उपयोग किया जाता है?", opts:["Wavelet Compression","DCT (Discrete Cosine Transform)","LZ77 + Huffman Coding","Lossy JPEG Compression"], ans:2,
+   eq:"Which Compression Technique is used in PNG (Portable Network Graphics)?", eopts:["Wavelet Compression","DCT (Discrete Cosine Transform)","LZ77 + Huffman Coding","Lossy JPEG Compression"]},
+  {n:21, q:"निम्न में से कौन-सा मेमोरी यूनिट का बढ़ता हुआ सही क्रम (Ascending Order) है?", opts:["Bit < Byte < Nibble < KB","Bit < Nibble < Byte < KB","Byte < Bit < Nibble < KB","KB < Byte < Nibble < Bit"], ans:1,
+   eq:"Which of the following is the correct ascending order of memory units?", eopts:["Bit < Byte < Nibble < KB","Bit < Nibble < Byte < KB","Byte < Bit < Nibble < KB","KB < Byte < Nibble < Bit"]},
+  {n:22, q:"MS Excel 365 में INDIRECT() Function किस Category का हिस्सा है?", opts:["Lookup & Reference","Text","Logical","Information"], ans:0,
+   eq:"Which category does the INDIRECT() function belong to in MS Excel 365?", eopts:["Lookup & Reference","Text","Logical","Information"]},
+  {n:23, q:"Excel 2019 में किसी Web API से XML Data प्राप्त (Import) करने के लिए किस Function का उपयोग किया जाता है?", opts:["WEBSERVICE()","HYPERLINK()","FILTERXML()","IMPORTDATA()"], ans:0,
+   eq:"Which function is used in Excel 2019 to import XML data from a Web API?", eopts:["WEBSERVICE()","HYPERLINK()","FILTERXML()","IMPORTDATA()"]},
+  {n:24, q:"पहला Electronic Computer कौन-सा था?", opts:["UNIVAC I (1951)","EDSAC (1949)","IBM 701 (1952)","ENIAC (1945)"], ans:3,
+   eq:"Which was the first Electronic Computer?", eopts:["UNIVAC I (1951)","EDSAC (1949)","IBM 701 (1952)","ENIAC (1945)"]},
+  {n:25, q:"दो अलग-अलग Input का एक ही Hash Output आने की स्थिति को ________ कहते हैं?", opts:["Encryption (एन्क्रिप्शन)","Hash Collision (हैश टकराव)","Salting (सॉल्टिंग)","Tokenization (टोकनाइजेशन)"], ans:1,
+   eq:"The condition where two different inputs produce the same Hash Output is called ________?", eopts:["Encryption","Hash Collision","Salting","Tokenization"]},
+  {n:26, q:"सभी संभावित Keys को एक-एक करके आज़माने वाले Attack को क्या कहते हैं?", opts:["Phishing Attack (फ़िशिंग अटैक)","Brute Force Attack (ब्रूट फोर्स अटैक)","Man-in-the-Middle Attack (MITM)","Replay Attack (रीप्ले अटैक)"], ans:1,
+   eq:"An attack that tries all possible keys one by one is called?", eopts:["Phishing Attack","Brute Force Attack","Man-in-the-Middle Attack (MITM)","Replay Attack"]},
+  {n:27, q:"1111₂ (Binary) का Decimal मान क्या होगा?", opts:["13","14","12","15"], ans:3,
+   eq:"What is the Decimal value of 1111₂ (Binary)?", eopts:["13","14","12","15"]},
+  {n:28, q:"Unicode में एक Character सामान्यतः कितने Bits का होता है?", opts:["8 Bits","16 Bits","32 Bits","64 Bits"], ans:1,
+   eq:"How many bits does a character generally occupy in Unicode?", eopts:["8 Bits","16 Bits","32 Bits","64 Bits"]},
+  {n:29, q:"1940–1956 के दशक में Vacuum Tubes का उपयोग ________ के Computers में किया गया था।", opts:["IBM PC, Apple II","IBM 360, PDP-11","Pentium, Core i3","ENIAC, UNIVAC"], ans:3,
+   eq:"In the 1940–1956 era, Vacuum Tubes were used in the computers of ________.", eopts:["IBM PC, Apple II","IBM 360, PDP-11","Pentium, Core i3","ENIAC, UNIVAC"]},
+  {n:30, q:"MS Word 2019/2021 में Mail Merge का Final Output क्या होता है?", opts:["Merged Document (मर्ज किया हुआ दस्तावेज़)","Data Source (डेटा स्रोत)","Main Document (मुख्य दस्तावेज़)","Template (टेम्पलेट)"], ans:0,
+   eq:"What is the Final Output of Mail Merge in MS Word 2019/2021?", eopts:["Merged Document","Data Source","Main Document","Template"]},
+  {n:31, q:"MS Word 2007 के Mailings Tab के 'Write & Insert Fields' Group में कौन-सा विकल्प शामिल नहीं है?", opts:["Insert Merge Field","Greeting Line","Address Block","Finish & Merge"], ans:3,
+   eq:"Which option is NOT included in the 'Write & Insert Fields' Group of Mailings Tab in MS Word 2007?", eopts:["Insert Merge Field","Greeting Line","Address Block","Finish & Merge"]},
+  {n:32, q:"Non-Volatile Memory Express (NVMe) किस Interface पर कार्य करता है?", opts:["SATA Interface","IDE Interface","PCIe (PCI Express) Interface","USB Interface"], ans:2,
+   eq:"Non-Volatile Memory Express (NVMe) works on which Interface?", eopts:["SATA Interface","IDE Interface","PCIe (PCI Express) Interface","USB Interface"]},
+  {n:33, q:"Rainbow Table Attack क्या है?", opts:["Precomputed Hash Table से Password Crack करने की तकनीक","Network Traffic Monitor करने की तकनीक","Virus हटाने की तकनीक","Data Compress करने की तकनीक"], ans:0,
+   eq:"What is a Rainbow Table Attack?", eopts:["Technique to crack passwords from Precomputed Hash Table","Technique to monitor network traffic","Technique to remove viruses","Technique to compress data"]},
+  {n:34, q:"Google Chrome में Bookmark Manager खोलने का Shortcut क्या है?", opts:["Ctrl + D","Ctrl + Shift + B","Ctrl + Shift + O","Ctrl + H"], ans:2,
+   eq:"What is the shortcut to open Bookmark Manager in Google Chrome?", eopts:["Ctrl + D","Ctrl + Shift + B","Ctrl + Shift + O","Ctrl + H"]},
+  {n:35, q:"बाज़ार में आधिकारिक रूप से जारी Software Version को क्या कहा जाता है?", opts:["Alpha Version","Beta Version","Release Candidate (RC)","Stable / GA (General Availability) Version"], ans:3,
+   eq:"What is an officially released (commercially available) software version called?", eopts:["Alpha Version","Beta Version","Release Candidate (RC)","Stable / GA (General Availability) Version"]},
+  {n:36, q:"MS Excel 2021 में POISSON Function का उपयोग किस लिए किया जाता है?", opts:["Poisson Distribution की Probability निकालने के लिए","Average निकालने के लिए","Random Number Generate करने के लिए","Standard Deviation निकालने के लिए"], ans:0,
+   eq:"What is the POISSON function used for in MS Excel 2021?", eopts:["To calculate Probability of Poisson Distribution","To find Average","To generate Random Numbers","To find Standard Deviation"]},
+  {n:37, q:"Windows 10 में कौन-से Folder Views उपलब्ध होते हैं?", opts:["Extra Large Icons, Large Icons","Medium Icons, Small Icons","List, Details, Tiles, Content","उपरोक्त सभी (All of the Above)"], ans:3,
+   eq:"Which Folder Views are available in Windows 10?", eopts:["Extra Large Icons, Large Icons","Medium Icons, Small Icons","List, Details, Tiles, Content","All of the Above"]},
+  {n:38, q:"बायोमेट्रिक सिस्टम में FAR (False Acceptance Rate) क्या दर्शाता है?", opts:["अधिकृत व्यक्ति को अस्वीकार करना","बायोमेट्रिक डेटा का आकार","बायोमेट्रिक स्कैन की गति","अनधिकृत व्यक्ति को गलती से स्वीकार करना"], ans:3,
+   eq:"What does FAR (False Acceptance Rate) indicate in a biometric system?", eopts:["Rejecting an Authorized person","Size of biometric data","Speed of biometric scan","Incorrectly accepting an Unauthorized person"]},
+  {n:39, q:"Excel 2021 में Alt + F1 दबाने पर Chart कहाँ बनता है?", opts:["नई Chart Sheet में","उसी Worksheet (Embedded Chart) में","नई Workbook में","Print Preview में"], ans:1,
+   eq:"When Alt + F1 is pressed in Excel 2021, where is the chart created?", eopts:["In a new Chart Sheet","In the same Worksheet (Embedded Chart)","In a new Workbook","In Print Preview"]},
+  {n:40, q:"Fedora का Package Format क्या है?", opts:[".deb",".rpm",".pkg",".exe"], ans:1,
+   eq:"What is the Package Format of Fedora?", eopts:[".deb",".rpm",".pkg",".exe"]},
+  {n:41, q:"निम्न में से कौन Firmware का उदाहरण नहीं है?", opts:["BIOS","UEFI","Windows 11","Router Firmware"], ans:2,
+   eq:"Which of the following is NOT an example of Firmware?", eopts:["BIOS","UEFI","Windows 11","Router Firmware"]},
+  {n:42, q:"Chart में Data Series की पहचान (रंग/प्रतीक) कौन दर्शाता है?", opts:["Legend (लीजेंड)","Plot Area (प्लॉट एरिया)","Gridlines (ग्रिडलाइन)","Chart Title (चार्ट शीर्षक)"], ans:0,
+   eq:"Which element displays the identification (color/symbol) of Data Series in a chart?", eopts:["Legend","Plot Area","Gridlines","Chart Title"]},
+  {n:43, q:"HDD में एक ही रेडियल पोज़िशन के Tracks के समूह को क्या कहते हैं?", opts:["Cluster (क्लस्टर)","Sector (सेक्टर)","Cylinder (सिलेंडर)","Block (ब्लॉक)"], ans:2,
+   eq:"What is a group of tracks at the same radial position in an HDD called?", eopts:["Cluster","Sector","Cylinder","Block"]},
+  {n:44, q:"MS Excel 2019 में Ctrl + Shift + _ का उपयोग किसके लिए किया जाता है?", opts:["Bottom Border हटाने के लिए","Top Border लगाने के लिए","Row Insert करने के लिए","Worksheet Delete करने के लिए"], ans:0,
+   eq:"What is Ctrl + Shift + _ used for in MS Excel 2019?", eopts:["To remove Bottom Border","To add Top Border","To insert a Row","To delete a Worksheet"]},
+  {n:45, q:"Excel में पूरी Row को Hide करने का शॉर्टकट क्या है?", opts:["Ctrl + 0","Ctrl + 9","Ctrl + Shift + 9","Alt + H + O + H"], ans:1,
+   eq:"What is the shortcut to hide an entire Row in Excel?", eopts:["Ctrl + 0","Ctrl + 9","Ctrl + Shift + 9","Alt + H + O + H"]},
+  {n:46, q:"HTTPS में 'S' का क्या अर्थ है और इसका Port Number क्या है?", opts:["Secure, Port 443","Server, Port 80","Service, Port 21","System, Port 25"], ans:0,
+   eq:"What does 'S' stand for in HTTPS and what is its Port Number?", eopts:["Secure, Port 443","Server, Port 80","Service, Port 21","System, Port 25"]},
+  {n:47, q:"USB 3.0 की Speed और Color क्या है?", opts:["12 Mbps, White (सफेद)","480 Mbps, Black (काला)","10 Gbps, Red (लाल)","5 Gbps, Blue (नीला)"], ans:3,
+   eq:"What is the Speed and Color of USB 3.0?", eopts:["12 Mbps, White","480 Mbps, Black","10 Gbps, Red","5 Gbps, Blue"]},
+  {n:48, q:"कौन-सा Impact Printer, टाइपराइटर जैसा आउटपुट देता है?", opts:["Daisy Wheel Printer","Dot Matrix Printer","Inkjet Printer","Laser Printer"], ans:0,
+   eq:"Which Impact Printer gives typewriter-like output?", eopts:["Daisy Wheel Printer","Dot Matrix Printer","Inkjet Printer","Laser Printer"]},
+  {n:49, q:"स्कैन की गई इमेज के Pixel की रंग गहराई को क्या कहते हैं?", opts:["PPI (पीपीआई)","DPI (डीपीआई)","Bit Depth (बिट डेप्थ)","Resolution (रिज़ॉल्यूशन)"], ans:2,
+   eq:"What is the color depth of pixels in a scanned image called?", eopts:["PPI","DPI","Bit Depth","Resolution"]},
+  {n:50, q:"MAR का पूरा नाम क्या है?", opts:["Memory Address Register","Memory Access Register","Main Address Register","Machine Address Register"], ans:0,
+   eq:"What is the full form of MAR?", eopts:["Memory Address Register","Memory Access Register","Main Address Register","Machine Address Register"]}
+];
+
+// ========== STATE ==========
+let userAnswers = new Array(50).fill(null);
+let showAllMode = false;
+let langMode = 'hi'; // 'hi' or 'en'
+const KEYS = ['A','B','C','D'];
+
+// ========== RENDER ==========
+function renderAll(filter='') {
+  const main = document.getElementById('mainContent');
+  main.innerHTML = '';
+  const low = filter.toLowerCase();
+  quizData.forEach((q,i) => {
+    const qText = langMode==='en' ? q.eq : q.q;
+    const opts = langMode==='en' ? q.eopts : q.opts;
+    if(filter){
+      if(!matchesSearch(q, low)) return;
+    }
+    const card = document.createElement('div');
+    card.className = 'q-card' + (q.warn ? ' warn-card' : '');
+    card.id = 'card-'+i;
+    const ua = userAnswers[i];
+    // Build options HTML
+    let optsHtml = '';
+    opts.forEach((opt,oi) => {
+      let cls = 'opt';
+      if(ua !== null || showAllMode) cls += ' disabled';
+      if(showAllMode && ua === null) { if(oi===q.ans) cls += ' correct'; }
+      else if(ua !== null) {
+        if(oi===q.ans) cls += ' correct';
+        else if(oi===ua) cls += ' wrong';
+      }
+      optsHtml += `<div class="${cls}" onclick="answer(${i},${oi})"><span class="opt-key">${KEYS[oi]})</span><span>${opt}</span></div>`;
+    });
+    // Answer area
+    let ansHtml = '<div class="ans-area">';
+    if(ua !== null) {
+      ansHtml += `उत्तर: <span class="ans-reveal">${KEYS[q.ans]}) ${opts[q.ans]}</span>`;
+    } else if(showAllMode) {
+      ansHtml += `उत्तर: <span class="ans-reveal">${KEYS[q.ans]}) ${opts[q.ans]}</span>`;
+    } else {
+      ansHtml += 'उत्तर: __________';
+    }
+    ansHtml += '</div>';
+    card.innerHTML = `
+      <div class="q-num">Q${q.n}${q.warn?' ⚠️':''}</div>
+      <div class="q-text">${qText}</div>
+      <div class="options">${optsHtml}</div>
+      ${ansHtml}
+    `;
+    main.appendChild(card);
+  });
+}
+
+function answer(idx, opt) {
+  if(userAnswers[idx] !== null) return;
+  if(showAllMode) return;
+  userAnswers[idx] = opt;
+  updateStats();
+  renderAll(document.getElementById('searchBox').value);
+}
+
+// ========== STATS ==========
+function updateStats() {
+  const attempted = userAnswers.filter(a=>a!==null).length;
+  const correctCount = userAnswers.filter((a,i)=>a===quizData[i].ans).length;
+  const wrongCount = attempted - correctCount;
+  const pct = attempted ? Math.round(correctCount/50*100) : 0;
+  document.getElementById('s-attempted').textContent = attempted;
+  document.getElementById('s-remaining').textContent = 50-attempted;
+  document.getElementById('s-correct').textContent = correctCount;
+  document.getElementById('s-wrong').textContent = wrongCount;
+  document.getElementById('s-score').textContent = correctCount;
+  document.getElementById('s-pct').textContent = pct+'%';
+}
+
+// ========== ANSWER KEY ==========
+function renderAnswerKey() {
+  const grid = document.getElementById('ansGrid');
+  grid.innerHTML = quizData.map(q=>`<div class="ans-item">Q${q.n} → <b>${KEYS[q.ans]}</b></div>`).join('');
+}
+
+function copyAnswerKey() {
+  const txt = quizData.map(q=>`Q${q.n} → ${KEYS[q.ans]}`).join('\n');
+  navigator.clipboard.writeText(txt).then(()=>showToast('✅ Answer Key Copied!'));
+}
+
+// ========== SHOW ALL (BOTTOM BUTTON) ==========
+function toggleShowAll() {
+  showAllMode = !showAllMode;
+  document.getElementById('showAllBtn').textContent = showAllMode ? '🙈 उत्तर छुपाएं' : '👁 सभी उत्तर दिखाएं';
+  renderAll(document.getElementById('searchBox').value);
+}
+
+// ========== LANG TOGGLE ==========
+function toggleLang() {
+  langMode = langMode==='hi' ? 'en' : 'hi';
+  const btn = document.getElementById('langBtn');
+  if(langMode==='en') { btn.textContent = '🔤 Hindi View'; btn.classList.add('active-lang'); }
+  else { btn.textContent = '🔤 English View'; btn.classList.remove('active-lang'); }
+  renderAll(document.getElementById('searchBox').value);
+}
+
+// ========== RESET ==========
+function resetAll() {
+  if(!confirm('सभी उत्तर Reset होंगे। क्या आप sure हैं?')) return;
+  userAnswers = new Array(50).fill(null);
+  showAllMode = false;
+  document.getElementById('showAllBtn').textContent = '👁 सभी उत्तर दिखाएं';
+  document.getElementById('searchBox').value = '';
+  updateStats();
+  renderAll();
+  showToast('🔄 Quiz Reset हो गया!');
+}
+
+// ========== SEARCH ==========
+function searchQuiz(val) { renderAll(val); }
+
+function matchesSearch(q, low) {
+  if(!low) return true;
+  const qText = langMode==='en' ? q.eq : q.q;
+  const opts = langMode==='en' ? q.eopts : q.opts;
+  const qNum = q.n;
+  const trimmed = low.trim();
+  // Normalize: remove spaces and trailing dot e.g. "Q1.", "Q 1", "q1", "1" -> "1"
+  let norm = trimmed.replace(/\s+/g,'').replace(/\.$/,'');
+  if(/^q?\d+$/.test(norm)) {
+    // Pure number search (with or without "q" prefix) -> exact match only
+    norm = norm.replace(/^q/,'');
+    return norm === String(qNum);
+  }
+  // Normal text search across question text/options
+  const searchableFull = (qText+' '+opts.join(' ')).toLowerCase();
+  return searchableFull.includes(trimmed);
+}
+
+// ========== THEME ==========
+function toggleTheme() {
+  document.body.classList.toggle('light');
+  const btn = document.getElementById('themeBtn');
+  btn.textContent = document.body.classList.contains('light') ? '🌙 Dark Mode' : '☀️ Light Mode';
+}
+
+// ========== RESULT ==========
+function showResult() {
+  const attempted = userAnswers.filter(a=>a!==null).length;
+  const correctCount = userAnswers.filter((a,i)=>a!==null && a===quizData[i].ans).length;
+  const wrongCount = userAnswers.filter((a,i)=>a!==null && a!==quizData[i].ans).length;
+  const skipped = 50 - attempted;
+  const pct = Math.round(correctCount/50*100);
+  document.getElementById('rScore').textContent = correctCount+'/50';
+  document.getElementById('rPct').textContent = 'Score: '+pct+'%';
+  document.getElementById('rCorrect').textContent = correctCount;
+  document.getElementById('rWrong').textContent = wrongCount;
+  document.getElementById('rSkipped').textContent = skipped;
+  let emoji='🏆', gradeText='', gradeClass='';
+  if(pct>=80){emoji='🏆';gradeText='🥇 Excellent! CPCT Topper Level';gradeClass='grade-a';}
+  else if(pct>=60){emoji='😊';gradeText='👍 Good! थोड़ी और Practice करें';gradeClass='grade-b';}
+  else if(pct>=40){emoji='😐';gradeText='📚 Average – Revision जरूरी है';gradeClass='grade-c';}
+  else{emoji='😔';gradeText='❗ Need Improvement – मेहनत जारी रखें!';gradeClass='grade-d';}
+  document.getElementById('rEmoji').textContent = emoji;
+  const gradeEl = document.getElementById('rGrade');
+  gradeEl.textContent = gradeText;
+  gradeEl.className = 'result-grade '+gradeClass;
+  document.getElementById('resultOverlay').classList.add('show');
+}
+function closeResult() { document.getElementById('resultOverlay').classList.remove('show'); }
+
+// ========== TOAST ==========
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2500);
+}
+
+// ========== BACK TO TOP ==========
+window.addEventListener('scroll', () => {
+  const btn = document.getElementById('backTopBtn');
+  if(window.scrollY > 300) btn.classList.add('show');
+  else btn.classList.remove('show');
+});
+
+// ========== CLOSE RESULT ON OVERLAY CLICK ==========
+document.getElementById('resultOverlay').addEventListener('click', function(e){
+  if(e.target===this) closeResult();
+});
+
+// ========== INIT ==========
+renderAll();
+updateStats();
+</script>
+</body>
+</html>
